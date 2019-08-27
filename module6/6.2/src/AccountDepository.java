@@ -1,24 +1,25 @@
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AccountDepository extends AccountBank {
 
-    private long lastAdd = 0L;
+    private LocalDate lastOperation;
+    private LocalDate canTakeOf;
 
-    public void setAccountAdd(double amountMoney) {
-        super.account = super.account + amountMoney;
-        lastAdd = System.currentTimeMillis();
+    @Override
+    public void withdraw(double amountMoney) {
+        this.account += amountMoney;
+        lastOperation = LocalDate.now();
+        canTakeOf = lastOperation.plusMonths(1);
     }
 
-    public void setAccountRemove(double amountMoney) {
-        Date lastPayment = new Date(lastAdd);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.MONTH, -1);
-        if (lastPayment.after(calendar.getTime())) {
-            System.out.println("Прошло меньше месяца с последнего внесения денег.");
-        } else {
-            super.account = super.account - amountMoney;
-        }
+    @Override
+    public void deposit(double amountMoney) {
+          lastOperation = LocalDate.now();
+          if (lastOperation.isAfter(canTakeOf)) {
+              this.account -= amountMoney;
+              System.out.println("Success");
+          } else {
+              System.out.println("Прошло меньше месяца с последнего внесения денег.");
+          }
     }
 }

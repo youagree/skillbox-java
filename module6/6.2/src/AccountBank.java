@@ -6,12 +6,12 @@ public class AccountBank {
         return account;
     }
 
-    public void setAccountAdd(double amountMoney) {
-        account = account + amountMoney;
+    public void withdraw(double amountMoney) {
+        account += amountMoney;
     }
 
-    public void setAccountRemove(double amountMoney) {
-        account = account - amountMoney;
+    public void deposit(double amountMoney) {
+        account -= amountMoney;
     }
 
 }

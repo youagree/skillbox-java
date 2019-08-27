@@ -5,17 +5,17 @@ public class Loader {
         AccountCash accountCash = new AccountCash();
         AccountDepository accountDepository = new AccountDepository();
 
-        accountDepository.setAccountAdd(10.0);
+        accountDepository.withdraw(10.0);
 
-        accountCash.setAccountAdd(20.0);
+        accountCash.withdraw(20.0);
         System.out.println(accountCash.getAccount());
 
-        accountCash.setAccountRemove(10.0);
+        accountCash.deposit(10.0);
         System.out.println(accountCash.getAccount());
 
-        accountDepository.setAccountAdd(20.0);
+        accountDepository.withdraw(20.0);
 
-        accountDepository.setAccountRemove(10.0);
+        accountDepository.deposit(10.0);
         System.out.println(accountDepository.getAccount());
     }
 }

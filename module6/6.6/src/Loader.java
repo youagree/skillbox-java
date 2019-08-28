@@ -3,25 +3,24 @@ public class Loader {
 
         Individual individual = new Individual();
         System.out.println(individual.getAccount());
-        individual.withdraw(10);
+        individual.replenishAccount(10);
         System.out.println(individual.getAccount());
-        individual.withdraw(10);
-        individual.replenishAccount(5);
+        individual.replenishAccount(10);
+        individual.withdraw(5);
         System.out.println(individual.getAccount());
-
 
         LegalEntity entity = new LegalEntity();
         System.out.println(entity.getAccount());
-        entity.withdraw(50);
+        entity.replenishAccount(50);
         System.out.println(entity.getAccount());
         entity.replenishAccount(10);
         System.out.println(entity.getAccount());
 
         IndividualEntrepreneur individualEntrepreneur = new IndividualEntrepreneur();
         System.out.println(individualEntrepreneur.getAccount());
-        individualEntrepreneur.withdraw(100);
+        individualEntrepreneur.replenishAccount(100);
         System.out.println(individualEntrepreneur.getAccount());
-        individualEntrepreneur.withdraw(2000);
+        individualEntrepreneur.replenishAccount(2000);
         System.out.println(individualEntrepreneur.getAccount());
 
         Individual individualTransfer = new Individual();
@@ -29,8 +28,12 @@ public class Loader {
 
         IndividualEntrepreneur individualEntrepreneurTransfer = new IndividualEntrepreneur();
 
-        individualTransfer.transferOfMoney(individualEntrepreneurTransfer, 40.0);
+        individualTransfer.transferOfMoney(individualEntrepreneurTransfer, 500);
+
+        individualEntrepreneurTransfer.transferOfMoney(individualTransfer, 40.0);
         System.out.println(individualTransfer.getAccount());
         System.out.println(individualEntrepreneurTransfer.getAccount());
+
+        entity.transferOfMoney(individualEntrepreneurTransfer, 40);
     }
 }

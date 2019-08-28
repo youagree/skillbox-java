@@ -14,11 +14,16 @@ public abstract class Client {
         this.account = account;
     }
 
-    public void setAccountRemove(double account) {
+    public void withdraw(double account) {
         this.account -= account;
     }
 
-    public void setAccountAdd(double account) {
+    public void replenishAccount(double account) {
         this.account += account;
+    }
+
+    public void transferOfMoney(Client client, double account) {
+        this.withdraw(account);
+        client.replenishAccount(account);
     }
 }

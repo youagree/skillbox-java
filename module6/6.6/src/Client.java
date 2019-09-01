@@ -15,12 +15,7 @@ public abstract class Client {
     }
 
     public void withdraw(double account) {
-        if (this.getAccount() < account) {
-            System.out.println("нехватает средств");
-            return;
-        } else {
-            this.account -= account;
-        }
+
     }
 
     public void replenishAccount(double account) {
@@ -28,7 +23,7 @@ public abstract class Client {
     }
 
     public void transferOfMoney(Client client, double account) {
-        if (client.getAccount() >= account) {
+        if (this.getAccount() >= account) {
             this.withdraw(account);
             client.replenishAccount(account);
             System.out.println("GOOD");

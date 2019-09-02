@@ -1,11 +1,24 @@
-abstract class Salary implements Employee, Comparable<Salary>{
+abstract class Salary implements Comparable<Salary> {
 
-    int salary;
-    int deferment;
-    int income;
-    String title;
+    protected static int incomeAll;
 
-    String getTitle() {
+    public int salary;
+    public int deferment;
+    public String title;
+
+    public String getTitle() {
         return title;
+    }
+
+    public static int getIncomeAll() {
+        return incomeAll;
+    }
+
+    public int getMonthSalary() {
+        return salary;
+    }
+
+    public int compareTo(Salary quantity) {
+        return quantity.getMonthSalary() - this.getMonthSalary();
     }
 }

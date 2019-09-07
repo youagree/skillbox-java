@@ -3,8 +3,9 @@ public class LegalEntity extends Client {
     private static final double TRESHOLD_COMMISSION = 0.01;
 
     @Override
-    public void withdraw(double account) {
-        this.account -= account + account * TRESHOLD_COMMISSION;
+    public boolean withdraw(double account) {
+        double result = this.balance - account + account * TRESHOLD_COMMISSION;
+        return checkTransaction(result);
     }
 
     @Override

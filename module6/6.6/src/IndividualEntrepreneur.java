@@ -6,16 +6,31 @@ public class IndividualEntrepreneur extends Client {
     private static final double COMISSION_REPLENISH = 0.01;
 
     @Override
-    public void withdraw(double account) {
+    public boolean withdraw(double account) {
         if (account < LOW_COMMISSION_TRESHOLD) {
-            this.account -= account + account * BEFORE_TRESHOLD_COMMISSION;
+            double resultBeforeTreshhold = this.balance - account + account * BEFORE_TRESHOLD_COMMISSION;
+            return checkTransaction(resultBeforeTreshhold, 0.0);
         } else {
-            this.account -= account + account * AFTER_TRESHOLD_COMMISSION;
+            double resultAfterTreshold = this.balance - account + account * AFTER_TRESHOLD_COMMISSION;
+            return checkTransaction(0.0, resultAfterTreshold);
         }
     }
 
     @Override
     public void replenishAccount(double account) {
-        this.account += account - (account * COMISSION_REPLENISH);
+        this.balance += account - (account * COMISSION_REPLENISH);
+    }
+
+    @Override
+    public boolean checkTransaction(double resultBeforeTreshhold, double resultAfterTreshold) {
+        if(resultBeforeTreshhold >= 0 && resultAfterTreshold == 0.0){
+            this.balance = resultBeforeTreshhold;
+            return true;
+        } else if (resultAfterTreshold >= 0 && resultBeforeTreshhold == 0.0) {
+            this.balance = resultAfterTreshold;
+            return true;
+        } else {
+            return false;
+        }
     }
 }

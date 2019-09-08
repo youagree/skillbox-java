@@ -4,8 +4,7 @@ public class LegalEntity extends Client {
 
     @Override
     public boolean withdraw(double account) {
-        double result = this.balance - account + account * TRESHOLD_COMMISSION;
-        return checkTransaction(result);
+        return super.withdraw(account + account * TRESHOLD_COMMISSION);
     }
 
     @Override
@@ -13,7 +12,7 @@ public class LegalEntity extends Client {
         if (account < 100){
             System.out.println("внесите сумму больше 100");
         } else {
-            super.replenishAccount(account);
+           super.replenishAccount(account);
         }
     }
 }

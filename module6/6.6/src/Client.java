@@ -1,6 +1,6 @@
 public abstract class Client {
 
-    protected double balance;
+    private double balance;
 
     public Client() {
         balance = 0.0;
@@ -14,26 +14,18 @@ public abstract class Client {
         this.balance = balance;
     }
 
-    public boolean withdraw(double account) {
-        double result = this.balance - account;
-        return checkTransaction(result);
-    }
-
     public void replenishAccount(double account) {
         this.balance += account;
     }
 
-    public boolean checkTransaction (double result) {
-        if(result >= 0){
-            this.balance = result;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean checkTransaction (double resultOne, double resultTwo) {
-        return true;
+    public boolean withdraw(double account) {
+     double resultOperation = this.balance - account;
+     if (resultOperation > 0) {
+         this.balance = resultOperation;
+         return true;
+     } else {
+         return false;
+     }
     }
 
     public void transferOfMoney(Client client, double account) {

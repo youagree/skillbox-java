@@ -1,4 +1,4 @@
-public class ManagerTop extends Salary {
+public class ManagerTop extends Company {
 
     public ManagerTop() {
         title = "Топ менеджер";
@@ -6,9 +6,11 @@ public class ManagerTop extends Salary {
     }
 
     @Override
-    public int getMonthSalary() {
+    public int getSalary() {
         salary = deferment;
-        if (getIncomeAll() > 10000000) salary = deferment + deferment / 10;
+        if (super.getIncomeAll() > 10000000) {
+            salary = deferment + deferment / 10;
+        }
         return salary;
     }
 }

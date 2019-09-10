@@ -1,8 +1,7 @@
-public class OperationsOfficer extends Salary {
+public class OperationsOfficer extends Company {
 
     public OperationsOfficer() {
         salary = RandomData.randomSalary();
         title = "Оператор";
     }
-
 }

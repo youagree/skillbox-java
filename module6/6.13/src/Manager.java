@@ -1,17 +1,21 @@
-class Manager extends Salary {
+
+class Manager extends Company {
 
     private int income;
 
     public Manager() {
         deferment = RandomData.randomSalary();
         income = RandomData.randomIncome();
-        incomeAll = getIncomeAll()+ income;
         title  = "Менеджер по продажам";
     }
 
     @Override
-    public int getMonthSalary() {
+    public int getSalary() {
         salary = deferment + income / 20;
         return salary;
+    }
+
+    public int getIncome() {
+        return income;
     }
 }

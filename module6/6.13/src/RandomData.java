@@ -19,6 +19,4 @@ public class RandomData {
     public static int random () {
         return random.nextInt(270);
     }
-
-
 }

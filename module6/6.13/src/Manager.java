@@ -1,7 +1,9 @@
 
-class Manager extends Company {
+class Manager extends AbstractEmployee {
 
     private int income;
+    private int deferment;
+    private int salary;
 
     public Manager() {
         deferment = RandomData.randomSalary();
@@ -17,5 +19,10 @@ class Manager extends Company {
 
     public int getIncome() {
         return income;
+    }
+
+    @Override
+    public int compareTo(AbstractEmployee o) {
+        return o.getSalary()-this.getSalary();
     }
 }

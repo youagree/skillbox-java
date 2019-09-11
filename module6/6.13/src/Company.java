@@ -2,37 +2,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Company  implements Comparable<Company>{
+public class Company {
 
-    protected int salary;
-    protected int deferment;
-    protected String title;
+    private static Company company = new Company();
+
     private int incomeAll;
+    private List<AbstractEmployee> list = new ArrayList<>();
 
-    private List<Company> list = new ArrayList<>();
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getSalary() {
-        return salary;
+    public static Company getCompany() {
+        return company;
     }
 
     public int getIncomeAll() {
-        for (Company employee : list) {
-            if (employee instanceof Manager) {
-                incomeAll += ((Manager) employee).getIncome();
+        if (incomeAll != 0) {
+            return incomeAll;
+        } else {
+            for (AbstractEmployee employee : list) {
+                if (employee instanceof Manager) {
+                    incomeAll += ((Manager) employee).getIncome();
+                }
             }
         }
         return incomeAll;
     }
 
-    public List<Company> getList() {
-        return list;
-    }
-
-    public void addEmployee (int count){
+    public void addEmployee(int count) {
         for (int i = 0; i < count; i++) {
             switch (RandomData.randomEmployee()) {
                 case 1:
@@ -48,35 +42,30 @@ public class Company  implements Comparable<Company>{
         }
     }
 
-    public List<Company> removeTenPercentEmpl(int percent){
-        percent = (int)(list.size()*(percent/100.0f));
-        for (int i = 0; i < percent; i++){
+    public List<AbstractEmployee> removeTenPercentEmpl(int percent) {
+        percent = (int) (list.size() * (percent / 100.0f));
+        for (int i = 0; i < percent; i++) {
             list.remove(RandomData.random());
         }
         return list;
     }
 
-    public void topFiveSalary(String parameter){
+    public void topFiveSalary(SalaryParam salaryParam) {
         Collections.sort(list);
-        if (parameter.equals("big")) {
+        if (salaryParam.equals(SalaryParam.BIG)) {
             System.out.println("5 самых больших зарплат - ");
             for (int i = 0; i <= 5; i++) {
-                System.out.println(list.get(i).title + "-" + list.get(i).getSalary());
+                System.out.println(list.get(i).getTitle() + "-" + list.get(i).getSalary());
             }
-        } else if (parameter.equals("small")) {
+        } else if (salaryParam.equals(SalaryParam.SMALL)) {
             System.out.println("5 самых маленьких зарплат - ");
             for (int i = list.size() - 1; i >= list.size() - 5; i--) {
-                System.out.println(list.get(i).title + "-" + list.get(i).getSalary());
+                System.out.println(list.get(i).getTitle() + "-" + list.get(i).getSalary());
             }
         }
     }
 
-    public void printEmployee () {
-        list.forEach((employee) -> System.out.println(employee.getTitle() + "-" + employee.getSalary()));
-    }
-
-    @Override
-    public int compareTo(Company o) {
-        return o.getSalary()-this.getSalary();
+    public void printEmployee() {
+        list.forEach((abstractEmployee) -> System.out.println(abstractEmployee.getTitle() + "-" + abstractEmployee.getSalary()));
     }
 }

@@ -1,4 +1,7 @@
-public class ManagerTop extends Company {
+
+public class ManagerTop extends AbstractEmployee {
+
+    private int deferment;
 
     public ManagerTop() {
         title = "Топ менеджер";
@@ -7,10 +10,14 @@ public class ManagerTop extends Company {
 
     @Override
     public int getSalary() {
-        salary = deferment;
-        if (super.getIncomeAll() > 10000000) {
-            salary = deferment + deferment / 10;
+        if (Company.getCompany().getIncomeAll() > 10000000) {
+            deferment += deferment / 10;
         }
-        return salary;
+        return deferment;
+    }
+
+    @Override
+    public int compareTo(AbstractEmployee o) {
+        return o.getSalary()-this.getSalary();
     }
 }

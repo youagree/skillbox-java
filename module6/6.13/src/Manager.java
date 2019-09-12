@@ -20,9 +20,4 @@ class Manager extends AbstractEmployee {
     public int getIncome() {
         return income;
     }
-
-    @Override
-    public int compareTo(AbstractEmployee o) {
-        return o.getSalary()-this.getSalary();
-    }
 }

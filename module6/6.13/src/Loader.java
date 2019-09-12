@@ -1,16 +1,21 @@
-import java.lang.reflect.Field;
-
 public class Loader {
 
-    public static void main(String[] args) throws NoSuchFieldException {
-        Company company = new Company();
-        company.addEmployee(50);
+    public static void main(String[] args) {
+        Company yandex = new Company();
+        Company google = new Company();
+        yandex.addEmployee(10);
+        google.addEmployee(10);
+
+        Boss boss = new Boss(100000);
+        boss.addCompanyAndBecomeBoss(yandex);
+        boss.addCompanyAndBecomeBoss(google);
+        boss.topFiveAmongCompanies();
 
         //check no repeats
-        System.out.println(company.getIncomeAll());
-        System.out.println(company.getIncomeAll());
+        System.out.println(yandex.getIncomeAll());
+        System.out.println(yandex.getIncomeAll());
 
         //try with Enum
-        company.topFiveSalary(SalaryParam.BIG);
+        yandex.topFiveSalary(SalaryParam.BIG);
     }
 }

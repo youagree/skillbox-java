@@ -15,9 +15,4 @@ public class ManagerTop extends AbstractEmployee {
         }
         return deferment;
     }
-
-    @Override
-    public int compareTo(AbstractEmployee o) {
-        return o.getSalary()-this.getSalary();
-    }
 }

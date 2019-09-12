@@ -9,5 +9,7 @@ public abstract class AbstractEmployee implements Comparable<AbstractEmployee> {
         return title;
     }
 
-    public abstract int compareTo(AbstractEmployee o);
+    public int compareTo(AbstractEmployee o)  {
+        return o.getSalary()-this.getSalary();
+    };
 }

@@ -12,9 +12,4 @@ public class OperationsOfficer extends AbstractEmployee {
     public int getSalary() {
         return salary;
     }
-
-    @Override
-    public int compareTo(AbstractEmployee o) {
-        return o.getSalary() - this.getSalary();
-    }
 }

@@ -11,7 +11,7 @@ public class Boss extends AbstractEmployee {
     }
 
     @Override
-    public int getSalary() {
+    public int getSalary(Company company) {
         return salary;
     }
 

@@ -12,7 +12,7 @@ class Manager extends AbstractEmployee {
     }
 
     @Override
-    public int getSalary() {
+    public int getSalary(Company company) {
         salary = deferment + income / 20;
         return salary;
     }

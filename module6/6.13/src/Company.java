@@ -4,13 +4,16 @@ import java.util.List;
 
 public class Company {
 
-    private static Company company = new Company();
-
     private int incomeAll;
     private List<AbstractEmployee> list = new ArrayList<>();
+    private String nameCompany;
 
-    public static Company getCompany() {
-        return company;
+    public Company(String nameCompany) {
+        this.nameCompany = nameCompany;
+    }
+
+    public String getNameCompany() {
+        return nameCompany;
     }
 
     public int getIncomeAll() {
@@ -51,21 +54,32 @@ public class Company {
     }
 
     public void topFiveSalary(SalaryParam salaryParam) {
-        Collections.sort(list);
+        Company company = this;
+        Collections.sort(list, (o1, o2) -> {
+            if (o1.getSalary(company) < o2.getSalary(company)) {
+                return 1;
+            } else if (o1.getSalary(company) > o2.getSalary(company)) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
         if (salaryParam.equals(SalaryParam.BIG)) {
-            System.out.println("5 самых больших зарплат - ");
+            System.out.println("5 самых больших зарплат - " + company.getNameCompany());
             for (int i = 0; i <= 5; i++) {
-                System.out.println(list.get(i).getTitle() + "-" + list.get(i).getSalary());
+                System.out.println(list.get(i).getTitle() + "-" + list.get(i).getSalary(company));
             }
         } else if (salaryParam.equals(SalaryParam.SMALL)) {
-            System.out.println("5 самых маленьких зарплат - ");
+            System.out.println("5 самых маленьких зарплат - " + company.getNameCompany());
             for (int i = list.size() - 1; i >= list.size() - 5; i--) {
-                System.out.println(list.get(i).getTitle() + "-" + list.get(i).getSalary());
+                System.out.println(list.get(i).getTitle() + "-" + list.get(i).getSalary(company));
             }
         }
     }
 
     public void printEmployee() {
-        list.forEach((abstractEmployee) -> System.out.println(abstractEmployee.getTitle() + "-" + abstractEmployee.getSalary()));
+        Company company = this;
+        list.forEach((abstractEmployee) ->
+                System.out.println(abstractEmployee.getTitle() + "-" + abstractEmployee.getSalary(company)));
     }
 }

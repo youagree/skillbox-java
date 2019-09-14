@@ -9,8 +9,8 @@ public class ManagerTop extends AbstractEmployee {
     }
 
     @Override
-    public int getSalary() {
-        if (Company.getCompany().getIncomeAll() > 10000000) {
+    public int getSalary(Company company) {
+        if (company.getIncomeAll() > 10000000) {
             deferment += deferment / 10;
         }
         return deferment;

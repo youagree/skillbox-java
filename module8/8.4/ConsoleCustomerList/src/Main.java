@@ -34,6 +34,8 @@ public class Main {
                 }
             } catch (IllegalArgumentException ex) {
                 System.out.println(ex.getMessage());
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                System.out.println("Empty command");
             }
         }
     }

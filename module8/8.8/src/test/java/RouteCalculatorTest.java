@@ -19,8 +19,6 @@ public class RouteCalculatorTest extends TestCase {
     List<Station> oneConnection;
     List<Station> twoConnection;
 
-
-
     @BeforeClass
     public void setUp () {
 
@@ -61,11 +59,8 @@ public class RouteCalculatorTest extends TestCase {
 
     noConnection = Stream.of(station1, station2, station3).collect(Collectors.toList());
     oneConnection = Stream.of(station1,station2, station3, station6, station5).collect(Collectors.toList());
-    twoConnection = Stream.of(station1,station2, station4, station5, station6, station8, station9).collect(Collectors.toList());
-        System.out.println(stationIndex.getConnectedStations(station3));
-        System.out.println(stationIndex.getConnectedStations(station6));
-        System.out.println(stationIndex.getConnectedStations(station4));
-        System.out.println(stationIndex.getConnectedStations(station7));
+    twoConnection = Stream.of(station1,station2, station3, station6, station5, station4, station7, station8)
+            .collect(Collectors.toList());
     }
 
     @Test
@@ -92,9 +87,9 @@ public class RouteCalculatorTest extends TestCase {
 
     @Test
     public void testGetShortRoutesTwoConnection () {
-        List<Station> expected = Arrays.asList(stations.get(0), stations.get(1), stations.get(2), stations.get(5),
-                stations.get(4), stations.get(7), stations.get(8));
-        System.out.println(routeCalculator.getShortestRoute(stations.get(0), stations.get(8)));// не попадает в ветку two conn.
+        List<Station> expected = Arrays.asList(stations.get(0), stations.get(1), stations.get(2),
+                stations.get(5), stations.get(4), stations.get(3), stations.get(6), stations.get(7));
+       routeCalculator.getShortestRoute(stations.get(0), stations.get(8));
+       assertEquals(expected, twoConnection);
     }
-
 }

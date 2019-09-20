@@ -171,7 +171,6 @@ public class RouteCalculator
                 }
             }
         }
-
         return route;
     }
 }

@@ -119,16 +119,6 @@ public class RouteCalculatorTest extends TestCase {
         assertEquals(twoConnection, actualResultStationList);
     }
 
-    @Test
-    public void testGetShortRoutesOneConnectionReturnNull() {
-
-    }
-
-    @Test
-    public void testGetShortRoutesTwoConnectionReturnNull() {
-
-    }
-
     /**
      * forFind intersection
      * @param stationName

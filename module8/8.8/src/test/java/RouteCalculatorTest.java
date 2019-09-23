@@ -68,34 +68,13 @@ public class RouteCalculatorTest extends TestCase {
         station8 = new Station("station8", line3);
         station9 = new Station("station9", line3);
 
-        stationIndex = new StationIndex();
-
-        stations = Stream.of(station1, station2, station3, station4, station5, station6, station7, station8, station9)
-                .collect(Collectors.toList());
-
-        List<Station> connect1 = Arrays.asList(station3, station6);
-        List<Station> connect2 = Arrays.asList(station4, station7);
-
-        Stream.of(station1, station2, station3, station4, station5, station6, station7, station8, station9)
-                .peek(e -> e.getLine().addStation(e)).forEach(stationIndex::addStation);
-
-        stationIndex.addConnection(connect1);
-        stationIndex.addConnection(connect2);
-
-        Stream.of(line1, line2, line3).forEach(stationIndex::addLine);
-
-        routeCalculator = new RouteCalculator(stationIndex);
-
-        noConnection = Stream.of(station1, station2, station3)
-                .collect(Collectors.toList());
-        oneConnection = Stream.of(station1, station2, station3, station6, station5)
-                .collect(Collectors.toList());
-        twoConnection = Stream.of(station1, station2, station3, station6, station5, station4, station7, station8)
-                .collect(Collectors.toList());
+        routeCalculator = new RouteCalculator(initStationIndex());
     }
 
     @Test
     public void testCalculateDuration() {
+        stations = Stream.of(station1, station2, station3, station4, station5, station6, station7, station8, station9)
+                .collect(Collectors.toList());
         double expected = RouteCalculator.calculateDuration(stations);
         double actual = 22;
         assertEquals(expected, actual);
@@ -103,42 +82,46 @@ public class RouteCalculatorTest extends TestCase {
 
     @Test
     public void testGetShortRoutes() {
-        actualResultStationList =  routeCalculator.getShortestRoute(station1, station3);
+        noConnection = Stream.of(station1, station2, station3)
+                .collect(Collectors.toList());
+        actualResultStationList = routeCalculator.getShortestRoute(station1, station3);
         assertEquals(noConnection, actualResultStationList);
     }
 
     @Test
     public void testGetShortRoutesOneConnection() {
+        oneConnection = Stream.of(station1, station2, station3, station6, station5)
+                .collect(Collectors.toList());
         actualResultStationList = routeCalculator.getShortestRoute(station1, station5);
         assertEquals(oneConnection, actualResultStationList);
     }
 
     @Test
     public void testGetShortRoutesTwoConnection() {
+        twoConnection = Stream.of(station1, station2, station3, station6, station5, station4, station7, station8)
+                .collect(Collectors.toList());
         actualResultStationList = routeCalculator.getShortestRoute(station1, station8);
         assertEquals(twoConnection, actualResultStationList);
     }
 
     /**
      * forFind intersection
+     *
      * @param stationName
      * @return Collection<Station>
      */
     @SuppressWarnings("unUsed")
     public List<Station> getStations(Station... stationName) {
         List<Station> nameOfStations = Arrays.asList(stationName);
-        try{
-            List<Station> intersection = stations.stream()
-                    .filter(nameOfStations::contains)
-                    .collect(Collectors.toList());
-            return intersection;
-        } catch (ClassCastException e) {
-            return null;
-        }
+        List<Station> intersection = stations.stream()
+                .filter(nameOfStations::contains)
+                .collect(Collectors.toList());
+        return intersection;
     }
 
     /**
      * forFind intersection
+     *
      * @param stationName
      * @return Collection<Station>
      */
@@ -149,4 +132,21 @@ public class RouteCalculatorTest extends TestCase {
         return foundStations;
     }
 
+    public StationIndex initStationIndex() {
+        stationIndex = new StationIndex();
+
+        Stream.of(station1, station2, station3, station4, station5, station6, station7, station8, station9)
+                .peek(e -> e.getLine().addStation(e)).forEach(stationIndex::addStation);
+
+
+        List<Station> connect1 = Arrays.asList(station3, station6);
+        List<Station> connect2 = Arrays.asList(station4, station7);
+
+        stationIndex.addConnection(connect1);
+        stationIndex.addConnection(connect2);
+
+        Stream.of(line1, line2, line3).forEach(stationIndex::addLine);
+
+        return stationIndex;
+    }
 }

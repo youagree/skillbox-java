@@ -29,10 +29,4 @@ public class Customer {
 
     @CsvBindByName(column = "Расход", required = true)
     private String consumption;
-
-
-
-
-
-
 }

@@ -1,12 +1,12 @@
 import lombok.Data;
 import lombok.ToString;
 
-@ToString
 @Data
+@ToString
 public class Summary {
 
-    static double income;
-    static double withdraw;
+    double income;
+    double withdraw;
 
     Summary(double income, double withdraw) {
         this.income = income;
@@ -21,8 +21,8 @@ public class Summary {
         return new Summary(convert(t.getComing()), convert(t.getConsumption()));
     }
 
-    public static Double convert(String number) {
-       Double afterConvert =  Double.parseDouble(number.replace(',', '.').trim());
+    public static double convert(String number) {
+        Double afterConvert = Double.parseDouble(number.replace(',', '.').trim());
         return afterConvert;
     }
 }

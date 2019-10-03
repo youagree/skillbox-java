@@ -29,4 +29,12 @@ public class Customer {
 
     @CsvBindByName(column = "Расход", required = true)
     private String consumption;
+
+    public static String getNameCompany(Customer customer) {
+        String[] transaction = customer.description.trim().split(" {3,}");
+        String[] temp = transaction[1].split("/");
+        String[] suppliesTemp = temp[temp.length - 1].split("\\\\");
+        String supplies = suppliesTemp[suppliesTemp.length - 1];
+        return supplies;
+    }
 }

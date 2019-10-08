@@ -23,15 +23,17 @@ public class Parser {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    private static String fileName = Paths.get("src", "main", "resources", "underground.json").toString();
     private static List<Line> lines = new LinkedList<>();
     private static Map<String, List<String>> stations = new TreeMap<>();
     private static List<List<Station>> connection = new ArrayList<>();
+    private static JSONParser parser = new JSONParser();
     private static Metro metro;
 
     static void createJsonFile() throws IOException {
 
         metro = new Metro(Parser.lines, Parser.stations, Parser.connection);
-        try (FileWriter file = new FileWriter("src\\main\\resources\\map.json")) {
+        try (FileWriter file = new FileWriter(fileName)) {
             file.write(GSON.toJson(metro));
         }
     }
@@ -61,12 +63,16 @@ public class Parser {
         if (!stations.containsKey(lineId)) {
             stations.put(lineId, new ArrayList<>());
             stations.get(lineId).add(stationName);
-        } else stations.get(lineId).add(stationName);
+        } else {
+            stations.get(lineId).add(stationName);
+        }
 
         if (connectionsLineName.size() == 2) {
             if (!stations.containsKey(lineNumbers.get(1)))
                 stations.put(lineNumbers.get(1), new ArrayList<>());
-            else stations.get(lineNumbers.get(1)).add(stationName);
+            else {
+                stations.get(lineNumbers.get(1)).add(stationName);
+            }
         }
     }
 
@@ -81,19 +87,25 @@ public class Parser {
         return sb.toString();
     }
 
-    static void JsonParser() throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(parseFile("src\\main\\resources\\map.json"));
-
+    static void jsonLinesParser() throws ParseException {
+        JSONObject jsonObject = (JSONObject) parser.parse(parseFile(fileName));
         Map<String, List<String>> stations = (Map<String, List<String>>) jsonObject.get("stations");
+        checkStaions(stations);
+    }
+
+    private static void checkStaions(Map<String, List<String>> stations) {
         for (String lineId : stations.keySet()) {
             JSONArray stationsArray = (JSONArray) stations.get(lineId);
             for (Line line : metro.getLines()) {
-                if (line.getId().equals(lineId)) {
-                    System.out.println("Линия " + lineId + " " + line.getName()
-                            + " -> количество станций: " + stationsArray.size());
-                }
+                checkLines(lineId, stationsArray, line);
             }
+        }
+    }
+
+    private static void checkLines(String lineId, JSONArray stationsArray, Line line) {
+        if (line.getId().equals(lineId)) {
+            System.out.println("Линия " + lineId + " " + line.getName()
+                    + " -> количество станций: " + stationsArray.size());
         }
     }
 }

@@ -6,17 +6,18 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Loader {
 
     public static void main(String[] args) throws IOException, ParseException {
 
-        Document document = Jsoup.parse(Parser.parseFile("src\\main\\resources\\stations.html"));
+        String file = Paths.get("src", "main", "resources", "stations.html").toString();
+        Document document = Jsoup.parse(Parser.parseFile(file));
         Element table = document.select("table").get(3);
         Elements rows = table.select("tr");
         rows.stream().skip(1).forEach((row) -> {
-
             Elements cols = row.select("td");
             String stationName = cols.get(1).text();
             String lineName = cols.get(0).child(1).attr("title");
@@ -26,10 +27,12 @@ public class Loader {
 
             Parser.parseStation(stationName, lineNumbers, connectionsLineName);
             Parser.parseLines(lineName, lineNumbers);
-            if (connectionsNumber.size() != 0) Parser.parseConnections(cols, stationName);
+            if (connectionsNumber.size() != 0) {
+                Parser.parseConnections(cols, stationName);
+            }
         });
 
         Parser.createJsonFile();
-        Parser.JsonParser();
+        Parser.jsonLinesParser();
     }
 }

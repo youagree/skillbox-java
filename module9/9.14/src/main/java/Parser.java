@@ -1,15 +1,13 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.Line;
-import dto.Metro;
 import dto.Station;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import lombok.Data;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,26 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Data
 public class Parser {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static String fileName = Paths.get("src", "main", "resources", "underground.json").toString();
-    private static List<Line> lines = new LinkedList<>();
-    private static Map<String, List<String>> stations = new TreeMap<>();
-    private static List<List<Station>> connection = new ArrayList<>();
-    private static JSONParser parser = new JSONParser();
-    private static Metro metro;
+    private List<Line> lines = new LinkedList<>();
+    private Map<String, List<String>> stations = new TreeMap<>();
+    private List<List<Station>> connection = new ArrayList<>();
 
-    static void createJsonFile() throws IOException {
-
-        metro = new Metro(Parser.lines, Parser.stations, Parser.connection);
-        try (FileWriter file = new FileWriter(fileName)) {
-            file.write(GSON.toJson(metro));
-        }
-    }
-
-    static void parseConnections(Elements cols, String stationName) {
+    private void parseConnections(Elements cols, String stationName) {
         List<String> connectionsLine = cols.get(3).children().eachAttr("title");
         List<String> connectionsNumber = cols.get(3).children().eachText();
         List<String> lineNumbers = cols.get(0).children().eachText();
@@ -53,12 +41,12 @@ public class Parser {
         }
     }
 
-    static void parseLines(String lineName, List<String> lineNumbers) {
+    private void parseLines(String lineName, List<String> lineNumbers) {
         Line line = new Line(lineNumbers.get(0), lineName);
         if (!lines.contains(line)) lines.add(line);
     }
 
-    static void parseStation(String stationName, List<String> lineNumbers, List<String> connectionsLineName) {
+    private void parseStation(String stationName, List<String> lineNumbers, List<String> connectionsLineName) {
         String lineId = lineNumbers.get(0);
         if (!stations.containsKey(lineId)) {
             stations.put(lineId, new ArrayList<>());
@@ -76,7 +64,7 @@ public class Parser {
         }
     }
 
-    static String parseFile(String path) {
+    protected String parseFile(String path) {
         StringBuilder sb = new StringBuilder();
         try {
             List<String> lines = Files.readAllLines(Paths.get(path));
@@ -87,26 +75,24 @@ public class Parser {
         return sb.toString();
     }
 
-    static void jsonLinesParser() throws ParseException {
-        JSONObject jsonObject = (JSONObject) parser.parse(parseFile(fileName));
-        Map<String, List<String>> stations = (Map<String, List<String>>) jsonObject.get("stations");
-        checkStaions(stations);
-    }
+    protected void parseInputData(String file) {
+        Document document = Jsoup.parse(parseFile(file));
+        Element table = document.select("table").get(3);
+        Elements rows = table.select("tr");
+        rows.stream().skip(1).forEach((row) -> {
+            Elements cols = row.select("td");
+            String stationName = cols.get(1).text();
+            String lineName = cols.get(0).child(1).attr("title");
+            List<String> lineNumbers = cols.get(0).children().eachText();
+            List<String> connectionsLineName = cols.get(0).children().eachAttr("title");
+            List<String> connectionsNumber = cols.get(3).children().eachText();
 
-    private static void checkStaions(Map<String, List<String>> stations) {
-        for (String lineId : stations.keySet()) {
-            JSONArray stationsArray = (JSONArray) stations.get(lineId);
-            for (Line line : metro.getLines()) {
-                checkLines(lineId, stationsArray, line);
+            parseStation(stationName, lineNumbers, connectionsLineName);
+            parseLines(lineName, lineNumbers);
+            if (connectionsNumber.size() != 0) {
+                parseConnections(cols, stationName);
             }
-        }
-    }
-
-    private static void checkLines(String lineId, JSONArray stationsArray, Line line) {
-        if (line.getId().equals(lineId)) {
-            System.out.println("Линия " + lineId + " " + line.getName()
-                    + " -> количество станций: " + stationsArray.size());
-        }
+        });
     }
 }
 

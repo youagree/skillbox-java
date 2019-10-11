@@ -1,5 +1,3 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dto.Line;
 import dto.Station;
 import lombok.Data;
@@ -19,8 +17,6 @@ import java.util.TreeMap;
 
 @Data
 public class Parser {
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private List<Line> lines = new LinkedList<>();
     private Map<String, List<String>> stations = new TreeMap<>();

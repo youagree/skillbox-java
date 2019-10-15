@@ -1,8 +1,21 @@
 package pojo;
 
 import lombok.Data;
+import pojo.type.CourseType;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,8 +36,9 @@ public class Course {
 
     private String description;
 
-    @Column(name = "teacher_id")
-    private int teacherId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     @Column(name = "students_count")
     private Integer studentCount;
@@ -33,4 +47,7 @@ public class Course {
 
     @Column(name = "price_per_hour")
     private Float pricePerHour;
+
+    @OneToMany(mappedBy = "course")
+    private List<Subscription> subscriptions;
 }

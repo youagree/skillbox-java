@@ -1,27 +1,26 @@
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import pojo.Course;
+import pojo.PurchaseList;
+import pojo.Student;
+import pojo.Subscription;
+import pojo.Teacher;
 
 public class Loader {
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Course.class)
+                .addAnnotatedClass(PurchaseList.class)
+                .addAnnotatedClass(Student.class)
+                .addAnnotatedClass(Subscription.class)
+                .addAnnotatedClass(Teacher.class)
                 .buildSessionFactory();
 
-        // CRUD
-        Session session = null;
-
         try {
-            session = factory.getCurrentSession();
-            session.beginTransaction();
-            Course course = session.get(Course.class, 1);
-            session.getTransaction().commit();
-            System.out.println(course);
+
         } finally {
             factory.close();
-            session.close();
         }
     }
 }

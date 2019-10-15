@@ -1,4 +1,4 @@
-package pojo;
+package pojo.type;
 
 public enum CourseType {
     DESIGN,

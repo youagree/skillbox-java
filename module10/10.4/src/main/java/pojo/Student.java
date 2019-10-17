@@ -1,6 +1,7 @@
 package pojo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,10 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
-@Entity
 @Data
+@Entity
+@EqualsAndHashCode(of = "name")
 @Table(name = "students")
 public class Student {
 
@@ -29,5 +31,5 @@ public class Student {
     private Date registrationDate;
 
     @OneToMany(mappedBy = "student")
-    private List<Subscription> subscriptions;
+    private Set<Subscription> subscriptions;
 }

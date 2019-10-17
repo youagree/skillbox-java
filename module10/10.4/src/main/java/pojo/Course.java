@@ -1,6 +1,7 @@
 package pojo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import pojo.type.CourseType;
 
 import javax.persistence.CascadeType;
@@ -15,10 +16,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
-@Entity
 @Data
+@Entity
+@EqualsAndHashCode(of = "name")
 @Table(name = "courses")
 public class Course {
 
@@ -49,5 +51,5 @@ public class Course {
     private Float pricePerHour;
 
     @OneToMany(mappedBy = "course")
-    private List<Subscription> subscriptions;
+    private Set<Subscription> subscriptions;
 }

@@ -1,6 +1,7 @@
 package pojo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.Entity;
@@ -9,10 +10,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
-@Entity
 @Data
+@Entity
+@EqualsAndHashCode(of = "name")
 @Table(name = "teachers")
 public class Teacher {
 
@@ -28,6 +30,6 @@ public class Teacher {
 
     @OneToMany(mappedBy = "teacher")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Course> courses;
+    private Set<Course> courses;
 
 }

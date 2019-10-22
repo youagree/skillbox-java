@@ -1,9 +1,11 @@
 package pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,6 +19,8 @@ import java.util.Date;
 
 @Data
 @Entity
+@Builder
+@Accessors(chain = true)
 @EqualsAndHashCode
 @Table(name = "student_courses")
 public class StudentsCourses {

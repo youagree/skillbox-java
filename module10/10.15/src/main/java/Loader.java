@@ -30,16 +30,18 @@ public class Loader {
                     "FROM PurchaseList p " +
                     "join Student s on (s.name = p.studentName) " +
                     "join Course c on (c.name = p.courseName)", Object[].class).getResultList();
-                 session.getTransaction().commit();
               purchaseLists.stream().forEach(row -> {
+                  Student student = session.get(Student.class, (int) row[0]);
+                  Course course = session.get(Course.class, (int) row[1]);
                   StudentsCourses studentsCourses = StudentsCourses.builder()
                           .id(new StudentsCourses.Id((int) row[0], (int) row [1]))
-                          .student(null)
-                          .course(null)
+                          .student(student)
+                          .course(course)
                           .price((int) row [2])
                           .subscriptionDate((Date) row[3])
                           .build();
                   session.save(studentsCourses);
+                  System.out.println(studentsCourses);
               });
             session.getTransaction().commit();
         } finally {

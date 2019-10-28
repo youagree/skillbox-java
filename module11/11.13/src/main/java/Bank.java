@@ -22,16 +22,15 @@ public class Bank {
         if (from.getIsBlocked().get() || to.getIsBlocked().get()) {
             return;
         }
-
-        if (from.withdraw(amount)) {
-            to.deposit(amount);
-        }
-
         if (amount > 50000) {
             if (isFraud(from.getAccNumber(), to.getAccNumber(), amount)) {
                 from.getIsBlocked().set(true);
                 to.getIsBlocked().set(true);
             }
+            return;
+        }
+        if (from.withdraw(amount)) {
+            to.deposit(amount);
         }
     }
 

@@ -5,28 +5,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ImageResizer {
 
-    private List<File[]> splitFiles(File[] files) {
-        int middle = files.length / 2;
-        File[] firstArray = new File[middle];
-        System.arraycopy(files, 0, firstArray, 0, firstArray.length);
-        File[] secondArray = new File[files.length - middle];
-        System.arraycopy(files, 0, secondArray, 0, secondArray.length);
-        List<File[]> arrays = Arrays.asList(firstArray, secondArray);
-        return arrays;
-    }
-
     public void resizeWithExecutor(File[] files, String dstFolder) throws InterruptedException {
+        List<File[]> listOfPictures = (List<File[]>) Arrays.asList(files);
         long start = System.currentTimeMillis();
         ExecutorService service = Executors.newFixedThreadPool(2);
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        splitFiles(files).forEach(e -> {
+        listOfPictures.forEach(e -> {
             service.submit(() -> {
                 try {
                     for (File file : files) {

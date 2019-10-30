@@ -19,13 +19,13 @@ public class Bank {
     public void transfer(int fromAccountNum, int toAccountNum, long amount) throws InterruptedException {
         Account from = accounts.get(fromAccountNum);
         Account to = accounts.get(toAccountNum);
-        if (from.getIsBlocked().get() || to.getIsBlocked().get()) {
+        if (from.getIsBlocked() || to.getIsBlocked()) {
             return;
         }
         if (amount > 50000) {
             if (isFraud(from.getAccNumber(), to.getAccNumber(), amount)) {
-                from.getIsBlocked().set(true);
-                to.getIsBlocked().set(true);
+                from.setIsBlocked(true);
+                to.setIsBlocked(true);
             }
             return;
         }

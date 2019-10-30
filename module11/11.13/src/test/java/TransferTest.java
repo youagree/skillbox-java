@@ -1,7 +1,6 @@
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,17 +36,6 @@ public class TransferTest {
         bank.setAccounts(accounts);
     }
 
-    @After
-    public void clear() {
-        bank = null;
-        firstAccount = null;
-        secondAccount = null;
-        thirdAccount = null;
-        fourthAccount = null;
-        fifthAccount = null;
-        accounts.clear();
-    }
-
     @Test
     public void testTransferOneThread() throws InterruptedException {
         bank.transfer(1, 2, 1000);
@@ -61,17 +49,17 @@ public class TransferTest {
 
     @Test
     public void testTransferManyThread() throws InterruptedException {
-        IntStream.range(0, 10).forEach(i -> {
+        IntStream.range(0, 1000).forEach(i -> {
             new Thread(() -> {
                 try {
-                    bank.transfer(1, 2, 1000);
-                    bank.transfer(1, 3, 1000);
-                    bank.transfer(3, 1, 1000);
-                    bank.transfer(3, 2, 1000);
-                    bank.transfer(2, 1, 1000);
-                    bank.transfer(2, 3, 1000);
-                    bank.transfer(1, 3, 1000);
-                    bank.transfer(2, 3, 1000);
+                    bank.transfer(1, 2, 1);
+                    bank.transfer(1, 3, 1);
+                    bank.transfer(3, 1, 1);
+                    bank.transfer(3, 2, 1);
+                    bank.transfer(2, 1, 1);
+                    bank.transfer(2, 3, 1);
+                    bank.transfer(1, 3, 1);
+                    bank.transfer(2, 3, 1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -79,11 +67,11 @@ public class TransferTest {
         });
         Thread.sleep(100);
         long actualA1 = firstAccount.getMoney().get();
-        long expectedA1 = 40000;
+        long expectedA1 = 49000;
         long actualA2 = secondAccount.getMoney().get();
-        long expectedA2 = 40000;
+        long expectedA2 = 49000;
         long actualA3 = thirdAccount.getMoney().get();
-        long expectedA3 = 70000;
+        long expectedA3 = 52000;
 
         assertEquals(expectedA1, actualA1);
         assertEquals(expectedA2, actualA2);
@@ -104,8 +92,8 @@ public class TransferTest {
             t.start();
             t.join();
         }
-        boolean actualFrom = fourthAccount.getIsBlocked().get();
-        boolean actualTo = fifthAccount.getIsBlocked().get();
+        boolean actualFrom = fourthAccount.getIsBlocked();
+        boolean actualTo = fifthAccount.getIsBlocked();
         assertTrue(actualFrom);
         assertTrue(actualTo);
     }

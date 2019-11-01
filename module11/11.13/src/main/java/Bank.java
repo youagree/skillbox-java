@@ -2,7 +2,6 @@ import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Data
 public class Bank {
@@ -29,21 +28,25 @@ public class Bank {
             }
             return;
         }
-        if (from.withdraw(amount)) {
-            to.deposit(amount);
+        synchronized (from) {
+            synchronized (to) {
+                if (from.withdraw(amount)) {
+                    to.deposit(amount);
+                }
+            }
         }
     }
 
     public long getBalance(int accountNum) {
         Account account = accounts.get(accountNum);
-        return account.getMoney().get();
+        return account.getMoney();
     }
 
     private static HashMap<Integer, Account> fillAccounts() {
         HashMap<Integer, Account> accountMap = new HashMap<>();
         for (int i = 1; i <= 100; i++) {
             long initialValue = (long) (80000 + 20000 * Math.random());
-            Account account = new Account(new AtomicLong(initialValue), i);
+            Account account = new Account(initialValue, i);
             accountMap.put(i, account);
         }
         return accountMap;

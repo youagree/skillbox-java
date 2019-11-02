@@ -26,18 +26,18 @@ public class LinkCollector extends RecursiveTask<String> {
     @Override
     protected String compute() {
         StringBuffer sb = new StringBuffer(url + "\n");
-        Set<LinkCollector> subTask = new HashSet<>();
-        getChildren(subTask);
+        Set<LinkCollector> subTask = getChildren();
         subTask.forEach(e -> sb.append(e.join()));
         return sb.toString();
     }
 
-    private void getChildren(Set<LinkCollector> subTask) {
+    private Set<LinkCollector> getChildren() {
         Document doc;
         Elements elements;
+        HashSet<LinkCollector> subTask = new HashSet<>();
         try {
             Thread.sleep(200);
-            doc = Jsoup.connect(url).get();
+            doc = Jsoup.connect(url).maxBodySize(0).get();
             elements = doc.select("a");
             elements.forEach(el -> {
                 String attr = el.attr("abs:href");
@@ -49,7 +49,9 @@ public class LinkCollector extends RecursiveTask<String> {
                     allLinks.add(attr);
                 }
             });
-        } catch (InterruptedException | IOException ignored) {
+        } catch (InterruptedException  | IOException ignored ) {
+            throw new RuntimeException(ignored);
         }
+        return subTask;
     }
 }

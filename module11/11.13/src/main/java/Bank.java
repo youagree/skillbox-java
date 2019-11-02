@@ -28,13 +28,24 @@ public class Bank {
             }
             return;
         }
-        synchronized (from) {
+        if (from.getAccNumber() < to.getAccNumber()){
+            synchronized (from) {
+                synchronized (to) {
+                    if (from.withdraw(amount)) {
+                        to.deposit(amount);
+                    }
+                }
+            }
+        } else {
             synchronized (to) {
-                if (from.withdraw(amount)) {
-                    to.deposit(amount);
+                synchronized (from) {
+                    if (from.withdraw(amount)) {
+                        to.deposit(amount);
+                    }
                 }
             }
         }
+
     }
 
     public long getBalance(int accountNum) {

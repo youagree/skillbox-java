@@ -1,10 +1,11 @@
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class TransferTest {
 
@@ -47,6 +48,7 @@ public class TransferTest {
 
     @Test
     public void testTransferManyThread() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(999);
         for (int i = 0; i < 1000; i++) {
             Thread thread = new Thread(() -> {
                 try {
@@ -70,10 +72,13 @@ public class TransferTest {
                 }
             });
             thread.start();
-            thread.join();
+            countDownLatch.countDown();
+            if (countDownLatch.getCount() == 0) {
+                thread.join();
+            }
         }
+        countDownLatch.await();
 
-        Thread.sleep(100);
         long actualA1 = firstAccount.getMoney();
         long expectedA1 = 49000L;
         long actualA2 = secondAccount.getMoney();

@@ -1,2 +1,20 @@
+
 server:
   port: 8080
+
+---
+spring:
+  profiles:
+    active: default
+
+  jpa:
+    hibernate.ddl-auto: validate
+    generate-ddl: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/sklbx?useSSL=false&amp&serverTimezone=UTC&amp&allowPublicKeyRetrieval=true
+    username: root
+    password: root

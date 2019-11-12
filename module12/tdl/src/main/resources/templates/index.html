@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Tasks</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tasks : ${task}">
+            <td th:text="${tasks.id}"/>
+            <td th:text="${tasks.name}"/>
+            <td th:text="${tasks.description}"/>
+            <td>
+                <a th:href="@{'/tasks/show/' + ${tasks.id}}" th:text="Просмотреть"/>
+                <a th:href="@{'/tasks/delete/' + ${tasks.id}}" th:text="Удалить"/>
+                <a th:href="@{'/tasks/edit/' + ${tasks.id}}" th:text="Редактировать"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <span th:text="${'Всего дел ' + task.size()}"/>
+    <br>
+    <a th:href="@{/tasks/add}">Добавить дело</a>
+    <br>
+</div>
+
+</body>
+</html>

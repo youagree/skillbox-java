@@ -14,24 +14,24 @@ public class SiteLog {
     }
 
     public void start() {
-        init();
-        print();
+        result = init();
+        print(result);
     }
 
-    private void init() {
+    private List<Tuple> init() {
         removeKey();
         for (int i = 1; i <= 20; i++) {
             client.zadd("Users", new Date().getTime(), String.valueOf(i));
         }
         ScanResult<Tuple> users = client.zscan("Users", "0");
-        result = users.getResult();
+        return users.getResult();
     }
 
-    private void print() {
-        for (Tuple user : result) {
+    private void print(List<Tuple> list) {
+        for (Tuple user : list) {
             System.out.println("User " + user.getElement());
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
                 if (Math.random() < 0.10) {
                     bill();
                 }
@@ -39,14 +39,13 @@ public class SiteLog {
                 e.printStackTrace();
             }
         }
-        print();
+        print(list);
     }
 
     private void bill() throws InterruptedException {
         int i = (int) (0 + result.size() * Math.random());
         String element = result.get(i).getElement();
         System.out.println("User " + element + " buy paid option");
-        System.out.println("User " + element);
         Thread.sleep(1000);
 
     }

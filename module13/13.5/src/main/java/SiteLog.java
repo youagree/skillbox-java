@@ -1,42 +1,37 @@
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ListPosition;
 
-import java.util.List;
+import java.util.Set;
 
 public class SiteLog {
 
     private Jedis client;
-    List<String> listOfUsers;
     String key = "Users";
+    Set<String> setOfUsers;
 
     public SiteLog(Jedis client) {
         this.client = client;
     }
 
-    public void start() {
-        listOfUsers = generateListOfUsers();
-        emulateSiteWork(listOfUsers);
+    public void startViewUsers() {
+        setOfUsers = generateListOfUsers();
+        emulateSiteWork(setOfUsers);
     }
 
-    private List<String> generateListOfUsers() {
+    private Set<String> generateListOfUsers() {
         removeKey();
         for (long i = 0; i < 20; i++) {
-            client.rpush(key, String.valueOf(i));
+            client.zadd(key, i, "User " + i);
         }
-        List<String> users = client.lrange(key, 0, 19);
-        users.stream().forEach(System.out::println);
+        Set<String> users = client.zrange(key, 0, 19);
         return users;
     }
 
-    private void emulateSiteWork(List<String> list) {
+    private void emulateSiteWork(Set<String> list) {
         for (;;){
-            for (int i = 0; i < list.size(); i++) {
-                System.out.println("User " + client.lindex(key, i));
+            for(String set : list){
+                System.out.println(set);
                 try {
-                    Thread.sleep(200);
-                    if (Math.random() < 0.10) {
-                        donateForPaidOption(i);
-                    }
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -44,12 +39,13 @@ public class SiteLog {
         }
     }
 
-    private void donateForPaidOption(int userNumber) throws InterruptedException {
-        long randomPosition = (long) (0 + listOfUsers.size() * Math.random());
-        String currentUser = client.lindex(key, userNumber);
-        client.linsert(key, ListPosition.AFTER,  currentUser,client.lindex(key,randomPosition));
-        System.out.println("User " + randomPosition + " buy paid option");
-        Thread.sleep(1000);
+    protected void donateForPaidOption() throws InterruptedException {
+        setOfUsers = generateListOfUsers();
+        for (;;){
+            long randomPosition = (long) (0 + setOfUsers.size() * Math.random());
+            System.out.println("User " + randomPosition + " buy paid option");
+            Thread.sleep(1000);
+        }
     }
 
     private void removeKey() {

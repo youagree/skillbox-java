@@ -1,3 +1,5 @@
+package first_exercise;
+
 import redis.clients.jedis.Jedis;
 
 public class Loader {
@@ -5,7 +7,5 @@ public class Loader {
         Jedis client = new Jedis("localhost", 6379);
         City cites = new City(client);
         cites.start();
-        SiteLog log = new SiteLog(client);
-        log.startViewUsers();
     }
 }

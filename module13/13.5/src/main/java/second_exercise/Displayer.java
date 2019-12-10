@@ -10,7 +10,6 @@ import redis.clients.jedis.Jedis;
 public class Displayer {
     public static void main(String[] args) {
         try (Jedis client = new Jedis(HOST, PORT)) {
-            client.del(KEY);
             for (long i = 0; i < 20; i++) {
                 client.lpush(KEY, "User  " + i);
             }

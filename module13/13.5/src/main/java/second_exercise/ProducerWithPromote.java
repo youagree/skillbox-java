@@ -13,6 +13,7 @@ public class ProducerWithPromote
         int count = 0;
         try (Jedis client = new Jedis(HOST, PORT)) {
             while (true) {
+                client.rpoplpush(KEY, KEY);
                 waitSomeTime(1000);
                 count++;
                 if (count == 5) {
@@ -22,7 +23,6 @@ public class ProducerWithPromote
                     client.lpush(KEY, user);
                     count = 0;
                 }
-                client.rpoplpush(KEY, KEY);;
             }
         }
     }

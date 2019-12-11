@@ -1,13 +1,22 @@
 package utils;
 
+import static com.mongodb.client.model.Accumulators.avg;
+import static com.mongodb.client.model.Accumulators.max;
+import static com.mongodb.client.model.Accumulators.min;
+import static com.mongodb.client.model.Accumulators.sum;
+import static com.mongodb.client.model.Aggregates.count;
+import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.lookup;
+import static com.mongodb.client.model.Aggregates.match;
+import static com.mongodb.client.model.Aggregates.unwind;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.lt;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -71,7 +80,7 @@ public class MongoDBUtils {
             String[] var = splitProductNameAndPrice(input);
             String shopName = var[2];
             String productName = var[1];
-            shops.updateOne(Filters.eq(getShop(shopName)), new Document("$addToSet",
+            shops.updateOne(eq(getShop(shopName)), new Document("$addToSet",
                     new Document("products", getProduct(productName).get("name"))));
             System.out.println("Продукт " + productName + " добавлен в магазин " + shopName);
         } catch (MongoException e) {
@@ -82,44 +91,52 @@ public class MongoDBUtils {
 
     public static void printStatistic() {
         printInfo(getAggregate());
+        printInfoCheapProduct(cheapestProductCount());
     }
 
     private static AggregateIterable<Document> getAggregate() {
         return products.aggregate(
                 Arrays.asList(
-                        Aggregates.lookup("shop", "name", "products", "shop_list"),
-                        Aggregates.unwind("$shop_list"),
-                        Aggregates.group("$shop_list.name",
-                                Accumulators.sum("count_products", 1),
-                                Accumulators.min("min_price", "$price"),
-                                Accumulators.max("max_price", "$price"),
-                                Accumulators.avg("avg_price", "$price"))
+                        lookup("shop", "name", "products", "shop_list"),
+                        unwind("$shop_list"),
+                        group("$shop_list.name",
+                                sum("count_products", 1),
+                                min("min_price", "$price"),
+                                max("max_price", "$price"),
+                                avg("avg_price", "$price"))
                 )
         );
     }
 
     private static void printInfo(AggregateIterable<Document> documents) throws MongoException {
-      try{
-        for (Document document : documents) {
-          String shopName = (String) document.get("_id");
-          System.out.println("Магазин " + shopName);
-          System.out.println("Количество товара: " + document.get("count_products"));
-          System.out.println("Средняя цена товара: " + document.get("avg_price"));
-          System.out.println("Самый дорогой товар:  " + document.get("max_price"));
-          System.out.println("Самый дешевый товар:  " + document.get("min_price"));
-          System.out
-                  .println("Количество товаров, дешевле 100 рублей: " + cheapestProductCount(shopName));
-          System.out.println();
+        try {
+            for (Document document : documents) {
+                String shopName = (String) document.get("_id");
+                System.out.println("Магазин " + shopName);
+                System.out.println("Количество товара: " + document.get("count_products"));
+                System.out.println("Средняя цена товара: " + document.get("avg_price"));
+                System.out.println("Самый дорогой товар:  " + document.get("max_price"));
+                System.out.println("Самый дешевый товар:  " + document.get("min_price"));
+            }
+        } catch (MongoException e) {
+            System.out.println(e);
         }
-      } catch (MongoException e) {
-        System.out.println(e);
-      }
     }
 
-    private static long cheapestProductCount(String shopName) {
-        Document shop = getShop(shopName);
-        ArrayList<String> products = (ArrayList<String>) shop.get("products");
-        return products.stream().filter(s -> (int) getProduct(s).get("price") < 100).count();
+    protected static void printInfoCheapProduct(AggregateIterable<Document> documents) throws MongoException {
+        try {
+            for (Document document : documents) {
+                System.out.println("Количество товаров, дешевле 100 рублей: " + document.get("cheap_product"));
+            }
+        } catch (MongoException e) {
+            System.out.println(e);
+        }
+    }
+
+    protected static AggregateIterable<Document> cheapestProductCount() {
+        return products.aggregate(Arrays.asList(
+                match(lt("cheap_product", 100)),
+                count("cheap_product")));
     }
 
     public static void shutdownDB() {

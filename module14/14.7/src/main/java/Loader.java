@@ -16,7 +16,7 @@ public class Loader {
     public static void main(String[] args) {
         int coreCount = Runtime.getRuntime().availableProcessors() * 2;
         long startTime = System.currentTimeMillis();
-        Path targetPath = Paths.get("res\\num1_multi.txt");
+        Path targetPath = Paths.get("res\\num2_multi.txt");
         ExecutorService executorService = Executors.newFixedThreadPool(coreCount);
         try {
             executorService.submit(() -> {
@@ -41,31 +41,27 @@ public class Loader {
     }
 
     public static void generateNumbers() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
+
             char[] letters = new char[]{'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
             StringBuilder carNumber = new StringBuilder();
-            char[] var3 = letters;
-            int var4 = letters.length;
 
-            for (int var5 = 0; var5 < var4; ++var5) {
-                char firstLetter = var3[var5];
-                char[] var7 = letters;
-                int var8 = letters.length;
+            for (int firstCycle = 0; firstCycle < letters.length; ++firstCycle) {
+                char firstLetter = letters[firstCycle];
 
-                for (int var9 = 0; var9 < var8; ++var9) {
-                    char secondLetter = var7[var9];
-                    char[] var11 = letters;
-                    int var12 = letters.length;
+                for (int secondCycle = 0; secondCycle < letters.length; ++secondCycle) {
+                    char secondLetter = letters[secondCycle];
 
-                    for (int var13 = 0; var13 < var12; ++var13) {
-                        char thirdLetter = var11[var13];
+                    for (int thirdCycle = 0; thirdCycle < letters.length; ++thirdCycle) {
+                        char thirdLetter = letters[thirdCycle];
 
                         for (int number = 1; number < 1000; ++number) {
+
                             carNumber.append(firstLetter)
-                                    .append(padNumber(number, 3))
-                                    .append(secondLetter).append(thirdLetter)
-                                    .append(padNumber(i, 2))
-                                    .append("\n");
+                                     .append(padNumber(number, 3))
+                                     .append(secondLetter).append(thirdLetter)
+                                     .append(padNumber(i, 2))
+                                     .append("\n");
                         }
                     }
                 }

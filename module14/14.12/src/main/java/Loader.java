@@ -12,20 +12,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Loader
-{
+public class Loader {
     private static SimpleDateFormat birthDayFormat = new SimpleDateFormat("yyyy.MM.dd");
     private static SimpleDateFormat visitDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
     private static HashMap<Integer, WorkTime> voteStationWorkTimes = new HashMap<>();
     private static HashMap<Voter, Integer> voterCounts = new HashMap<>();
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         String fileName = "src/main/resources/data-18M.xml";
         File file = new File(fileName);
-//        parseFile(file.getPath());
-//        parseFileSax(file.getPath());
+        parseFile(file.getPath());
+        parseFileSax(file.getPath());
         printResult();
         long usage = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.printf("Used memory: " + (double) usage / Math.pow(2, 20) + "mb");
@@ -33,24 +31,21 @@ public class Loader
 
     private static void printResult() {
         System.out.println("Voting station work times: ");
-        for(Integer votingStation : voteStationWorkTimes.keySet())
-        {
+        for (Integer votingStation : voteStationWorkTimes.keySet()) {
             WorkTime workTime = voteStationWorkTimes.get(votingStation);
             System.out.println("\t" + votingStation + " - " + workTime);
         }
 
         System.out.println("Duplicated voters: ");
-        for(Voter voter : voterCounts.keySet())
-        {
+        for (Voter voter : voterCounts.keySet()) {
             Integer count = voterCounts.get(voter);
-            if(count > 1) {
+            if (count > 1) {
                 System.out.println("\t" + voter + " - " + count);
             }
         }
     }
 
-    private static void parseFile(String fileName) throws Exception
-    {
+    private static void parseFile(String fileName) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(new File(fileName));
@@ -59,21 +54,18 @@ public class Loader
         fixWorkTimes(doc);
     }
 
-    private static void parseFileSax(String fileName) throws Exception
-    {
+    private static void parseFileSax(String fileName) throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
         XMLHandler handler = new XMLHandler();
-        parser.parse(new File(fileName),handler);
+        parser.parse(new File(fileName), handler);
         handler.printDublicatedVoters();
     }
 
-    private static void findEqualVoters(Document doc) throws Exception
-    {
+    private static void findEqualVoters(Document doc) throws Exception {
         NodeList voters = doc.getElementsByTagName("voter");
         int votersCount = voters.getLength();
-        for(int i = 0; i < votersCount; i++)
-        {
+        for (int i = 0; i < votersCount; i++) {
             Node node = voters.item(i);
             NamedNodeMap attributes = node.getAttributes();
 
@@ -86,20 +78,17 @@ public class Loader
         }
     }
 
-    private static void fixWorkTimes(Document doc) throws Exception
-    {
+    private static void fixWorkTimes(Document doc) throws Exception {
         NodeList visits = doc.getElementsByTagName("visit");
         int visitCount = visits.getLength();
-        for(int i = 0; i < visitCount; i++)
-        {
+        for (int i = 0; i < visitCount; i++) {
             Node node = visits.item(i);
             NamedNodeMap attributes = node.getAttributes();
 
             Integer station = Integer.parseInt(attributes.getNamedItem("station").getNodeValue());
             Date time = visitDateFormat.parse(attributes.getNamedItem("time").getNodeValue());
             WorkTime workTime = voteStationWorkTimes.get(station);
-            if(workTime == null)
-            {
+            if (workTime == null) {
                 workTime = new WorkTime();
                 voteStationWorkTimes.put(station, workTime);
             }

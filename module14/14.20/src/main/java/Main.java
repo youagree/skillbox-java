@@ -6,14 +6,14 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) throws SQLException {
-        String fileName = "src\\main\\resources\\data-1M.xml";
+        String fileName = "src\\main\\resources\\data-1572M.xml";
         long start = System.currentTimeMillis();
         try {
             parseFileSax(fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println((System.currentTimeMillis() - start)/1000 + "- insert");
+        System.out.println((System.currentTimeMillis() - start)/1000F + " sec - insert");
         DBConnection.printVoterCounts();
         DBConnection.createIndex();
         DBConnection.customSelect("Красненко Аникей");

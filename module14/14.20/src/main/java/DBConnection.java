@@ -25,6 +25,7 @@ public class DBConnection {
                             "&amp" +
                             "&serverTimezone=UTC" +
                             "&allowPublicKeyRetrieval=true");
+            connection.setAutoCommit(false);
             connection.createStatement().execute("DROP TABLE IF EXISTS voter_count");
             connection.createStatement().execute("CREATE TABLE voter_count(" +
                     "id INT NOT NULL AUTO_INCREMENT, " +
@@ -72,7 +73,7 @@ public class DBConnection {
                     .append(rs.getInt("vote_num"))
                     .append("\n");
         }
-        System.out.println((System.currentTimeMillis() - start)/1000 + "- search duplicates");
+        System.out.println((System.currentTimeMillis() - start)/1000F + " sec - search duplicates");
         rs.close();
     }
 
@@ -90,7 +91,7 @@ public class DBConnection {
                     .append("\n");
         }
         System.out.println(result.toString());
-        System.out.println((System.currentTimeMillis() - start)/1000 + "- simple select");
+        System.out.println((System.currentTimeMillis() - start)/1000F + " sec - simple select");
         rs.close();
     }
 

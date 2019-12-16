@@ -25,16 +25,13 @@ public class DBConnection {
                             "&amp" +
                             "&serverTimezone=UTC" +
                             "&allowPublicKeyRetrieval=true");
-            connection.setAutoCommit(false);
             connection.createStatement().execute("DROP TABLE IF EXISTS voter_count");
             connection.createStatement().execute("CREATE TABLE voter_count(" +
                     "id INT NOT NULL AUTO_INCREMENT, " +
                     "name TINYTEXT NOT NULL, " +
                     "birthDate DATE NOT NULL, " +
                     "count INT NOT NULL, " +
-                    "PRIMARY KEY(id), " +
-                    "KEY(name(50)));");
-            connection.commit();
+                    "PRIMARY KEY(id));");
             String insertSQL = "INSERT INTO voter_count (name, birthDate,count) VALUES (?,?,?)";
             preparedStatement = connection.prepareStatement(insertSQL);
         }
@@ -57,6 +54,7 @@ public class DBConnection {
     }
 
     public static void printVoterCounts() throws SQLException {
+        long start = System.currentTimeMillis();
         int counter = 0;
         String sql = "select name,birthDate,vote_num from (select name,count,birthDate," +
                 "count(count) as vote_num from voter_count group by name,birthDate order " +
@@ -74,10 +72,12 @@ public class DBConnection {
                     .append(rs.getInt("vote_num"))
                     .append("\n");
         }
+        System.out.println((System.currentTimeMillis() - start)/1000 + "- search duplicates");
         rs.close();
     }
 
     public static void customSelect(String name) throws SQLException {
+        long start = System.currentTimeMillis();
         String sql = "SELECT name, birthDate FROM voter_count WHERE name ='" + name + "'";
 
         ResultSet rs = DBConnection.getConnection().createStatement().executeQuery(sql);
@@ -89,11 +89,17 @@ public class DBConnection {
                     .append(rs.getString("birthDate"))
                     .append("\n");
         }
-        System.out.println(result.toString().isBlank() ? "not found" : result.toString());
+        System.out.println(result.toString());
+        System.out.println((System.currentTimeMillis() - start)/1000 + "- simple select");
         rs.close();
     }
 
     static void connectionClose() throws SQLException {
         connection.close();
+    }
+
+    static void createIndex() throws SQLException {
+        String sql = "CREATE INDEX name ON voter (name);";
+        preparedStatement = connection.prepareStatement(sql);
     }
 }

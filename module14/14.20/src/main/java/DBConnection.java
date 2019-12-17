@@ -24,7 +24,8 @@ public class DBConnection {
                             "&useLegacyDatetimeCode=false" +
                             "&amp" +
                             "&serverTimezone=UTC" +
-                            "&allowPublicKeyRetrieval=true");
+                            "&allowPublicKeyRetrieval=true" +
+                            "&rewriteBatchedStatements=true");
             connection.setAutoCommit(false);
             connection.createStatement().execute("DROP TABLE IF EXISTS voter_count");
             connection.createStatement().execute("CREATE TABLE voter_count(" +

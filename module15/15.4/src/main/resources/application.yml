@@ -1,0 +1,7 @@
+logging:
+  pattern:
+    level: INFO
+  level:
+    ROOT: INFO
+    ru.vtb.dbo: DEBUG
+    org.springframework: INFO

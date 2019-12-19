@@ -1,5 +1,0 @@
-logging:
-  pattern:
-    level: INFO
-  level:
-    ROOT: INFO

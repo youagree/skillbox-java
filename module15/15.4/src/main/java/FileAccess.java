@@ -1,6 +1,3 @@
-import static java.lang.System.out;
-import static java.lang.System.setProperty;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -14,6 +11,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.System.out;
+import static java.lang.System.setProperty;
 
 public class FileAccess {
 
@@ -30,17 +30,17 @@ public class FileAccess {
         Configuration configuration = new Configuration();
         configuration.set("dfs.client.use.datanode.hostname", "true");
         setProperty("HADOOP_USER_NAME", "root");
-        hdfs = FileSystem.get(new URI("hdfs://localhost:8020"), configuration);
+        hdfs = FileSystem.get(new URI("hdfs://48c4cfa049db:8020"), configuration);
         path = new Path("hdfs://" + containerName + ":" + port + "/");
     }
 
     /**
      * Creates empty file or directory
      *
-     * @param path
+     * @param extraPath
      */
-    public String create(String path) throws IOException {
-        try (FSDataOutputStream dataOutputStream = hdfs.create(new Path(path))) {
+    public String create(String extraPath) throws IOException {
+        try (FSDataOutputStream dataOutputStream = hdfs.create(new Path(path + extraPath))) {
             return "success load, size: " + dataOutputStream.size();
         }
     }
@@ -48,19 +48,19 @@ public class FileAccess {
     /**
      * Appends content to the file
      *
-     * @param path
+     * @param extraPath
      * @param content
      */
-    public void append(String path, String content) throws IOException {
-        if (hdfs.exists(new Path(path))) {
-            out.println("write process start into " + path);
-            try (FSDataOutputStream fileOutputStream = hdfs.append(new Path(path))) {
+    public void append(String extraPath, String content) throws IOException {
+        if (hdfs.exists(new Path(path + extraPath))) {
+            out.println("write process start into " + extraPath);
+            try (FSDataOutputStream fileOutputStream = hdfs.append(new Path(path + extraPath))) {
                 fileOutputStream.writeBytes(content);
             }
             out.println("write process finish");
         } else {
-            out.println("create new file because does not exist yet " + path);
-            try (FSDataOutputStream fileOutputStream = hdfs.create(new Path(path))) {
+            out.println("create new file because does not exist yet " + extraPath);
+            try (FSDataOutputStream fileOutputStream = hdfs.create(new Path(path + extraPath))) {
                 fileOutputStream.writeBytes(content);
             }
             out.println("write process finish");
@@ -70,11 +70,11 @@ public class FileAccess {
     /**
      * Returns content of the file
      *
-     * @param path
+     * @param extraPath
      * @return
      */
-    public String read(String path) throws IOException {
-        try (FSDataInputStream inputStream = hdfs.open(new Path(path))){
+    public String read(String extraPath) throws IOException {
+        try (FSDataInputStream inputStream = hdfs.open(new Path(path + extraPath))) {
             String out = IOUtils.toString(inputStream, "UTF-8");
             return out;
         }
@@ -83,11 +83,11 @@ public class FileAccess {
     /**
      * Deletes file or directory
      *
-     * @param path
+     * @param extraPath
      */
-    public void delete(String path) throws IOException {
-        try{
-            hdfs.delete(new Path(path), true);
+    public void delete(String extraPath) throws IOException {
+        try {
+            hdfs.delete(new Path(path + extraPath), true);
         } finally {
             hdfs.close();
         }
@@ -96,17 +96,17 @@ public class FileAccess {
     /**
      * Checks, is the "path" is directory or file
      *
-     * @param path
+     * @param extraPath
      * @return
      */
-    public boolean isDirectory(String path) throws IOException {
+    public boolean isDirectory(String extraPath) throws IOException {
         try {
-            FileStatus fileStatus = hdfs.getFileStatus(new Path(path));
+            FileStatus fileStatus = hdfs.getFileStatus(new Path(path + extraPath));
             if (fileStatus.isDirectory()) {
-                out.println("is directory " + path);
+                out.println("is directory " + extraPath);
                 return true;
             } else {
-                out.println("not is directory " + path);
+                out.println("not is directory " + extraPath);
                 return false;
             }
         } finally {
@@ -117,13 +117,13 @@ public class FileAccess {
     /**
      * Return the list of files and subdirectories on any directory
      *
-     * @param path
+     * @param extraPath
      * @return
      */
-    public List<String> getFilesList(String path) throws IOException {
+    public List<String> getFilesList(String extraPath) throws IOException {
         List<String> fileList = new ArrayList<String>();
         try {
-            FileStatus[] fileStatus = hdfs.listStatus(new Path(path));
+            FileStatus[] fileStatus = hdfs.listStatus(new Path(path + extraPath));
             for (FileStatus fileStat : fileStatus) {
                 if (fileStat.isDirectory()) {
                     String filePath = fileStat.getPath().toString();

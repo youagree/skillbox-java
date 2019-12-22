@@ -15,7 +15,7 @@ import java.util.List;
 import static java.lang.System.out;
 import static java.lang.System.setProperty;
 
-public class FileAccess {
+public class FileAccess implements AutoCloseable {
 
     private static FileSystem hdfs;
     private Path path;
@@ -30,7 +30,7 @@ public class FileAccess {
         Configuration configuration = new Configuration();
         configuration.set("dfs.client.use.datanode.hostname", "true");
         setProperty("HADOOP_USER_NAME", "root");
-        hdfs = FileSystem.get(new URI("hdfs://48c4cfa049db:8020"), configuration);
+        hdfs = FileSystem.get(new URI("hdfs://"+ containerName + ":" + port), configuration);
         path = new Path("hdfs://" + containerName + ":" + port + "/");
     }
 
@@ -121,8 +121,7 @@ public class FileAccess {
      * @return
      */
     public List<String> getFilesList(String extraPath) throws IOException {
-        List<String> fileList = new ArrayList<String>();
-        try {
+        List<String> fileList = new ArrayList<>();
             FileStatus[] fileStatus = hdfs.listStatus(new Path(path + extraPath));
             for (FileStatus fileStat : fileStatus) {
                 if (fileStat.isDirectory()) {
@@ -133,8 +132,11 @@ public class FileAccess {
                 }
             }
             return fileList;
-        } finally {
-            hdfs.close();
-        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        hdfs.close();
+        System.out.println("Closing!");
     }
 }

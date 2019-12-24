@@ -12,7 +12,7 @@ public class ReentrantLockTest {
     @Test
     public void testLockAndUnlock() throws InterruptedException {
         ReentrantLock reentrantLock = new ReentrantLock();
-        CountDownLatch countDownLatch = new CountDownLatch(9);
+        CountDownLatch countDownLatch = new CountDownLatch(10);
         List<String> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Thread.sleep(100);
@@ -28,6 +28,6 @@ public class ReentrantLockTest {
             }).start();
         }
         countDownLatch.await();
-        assertEquals(list.size(), 9);
+        assertEquals(list.size(), 10);
     }
 }

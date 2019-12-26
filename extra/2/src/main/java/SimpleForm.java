@@ -15,17 +15,16 @@ public class SimpleForm extends JPanel{
         // TODO: place custom component creation code here
         rootPanel=this;
     }
+
     public Person getPerson(){
         String fio[]=textFIO.getText().trim().split("\\s++");
-        switch (fio.length){
-            case 0: return new Person();
-            case 1: return new Person(fio[0],"","");
-            case 2: return new Person(fio[0],fio[1],"");
-            case 3: return new Person(fio[0],fio[1],fio[2]);
-            default: return null;
+        return Person.builder()
+                .name(fio.length > 0 ? fio[0] : "")
+                .surname(fio.length > 1 ? fio[1] : "")
+                .fathername(fio.length > 2 ? fio[2] : "")
+                .build();
         }
 
-    }
     public void setPerson(Person person){
         textFIO.setText(person.toString());
     }

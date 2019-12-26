@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class MyChangeFrame extends JFrame {
 
@@ -25,8 +26,12 @@ public class MyChangeFrame extends JFrame {
 
     protected void simpleSwitch() {
         Person person = simpleForm.getPerson();
-        fullForm.setPerson(person);
-        setContentPanel(fullForm);
+        if (Objects.nonNull(person)) {
+            fullForm.setPerson(person);
+            setContentPanel(fullForm);
+        } else {
+            return;
+        }
     }
 
     protected void setContentPanel(Container container) {
